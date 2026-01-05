@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ias_test
+    username: postgres
+    password: M@kinj@131194
+
+  jpa:
+    show-sql: false

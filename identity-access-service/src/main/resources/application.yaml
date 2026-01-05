@@ -2,14 +2,14 @@ spring:
   application:
     name: identity-access-service
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/ias
-    username: postgres
-    password: M@kinj@131194
-
   jpa:
+    open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
