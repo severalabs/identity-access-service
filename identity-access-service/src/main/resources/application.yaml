@@ -2,6 +2,14 @@ spring:
   application:
     name: identity-access-service
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ias_dev
+    username: postgres
+    password: M@kinj@131194
+
+  profiles:
+    active: dev
+
   jpa:
     open-in-view: false
     hibernate:
@@ -9,6 +17,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  flyway:
+    enabled: true
+    baselineOnMigrate: true
 
 logging:
   level:

@@ -1,8 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/ias_local
+    url: jdbc:postgresql://localhost:5432/ias_dev
     username: postgres
     password: M@kinj@131194
 
   jpa:
     show-sql: true
+
