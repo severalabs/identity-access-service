@@ -18,19 +18,4 @@ public class IdentityAccessServiceApplication {
 		SpringApplication.run(IdentityAccessServiceApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner demo(RoleRepository roleRepository) {
-		return (args) -> {
-
-			Role userRole = new Role();
-			userRole.setName("USER");
-
-			Role adminRole = new Role();
-			adminRole.setName("ADMIN");
-
-			roleRepository.save(userRole);
-			roleRepository.save(adminRole);
-
-		};
-	}
 }
