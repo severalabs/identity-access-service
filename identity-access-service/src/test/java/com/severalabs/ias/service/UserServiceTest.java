@@ -3,6 +3,7 @@ package com.severalabs.ias.service;
 import com.severalabs.ias.domain.User;
 import com.severalabs.ias.dto.UserRegistrationDTO;
 import com.severalabs.ias.exception.UserAlreadyExistsException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 @ActiveProfiles("test")
 public class UserServiceTest {
 
