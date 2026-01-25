@@ -2,7 +2,6 @@ package com.severalabs.ias.repository;
 
 import com.severalabs.ias.domain.Role;
 import com.severalabs.ias.domain.User;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
