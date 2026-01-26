@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
                         loginRequest.email(), loginRequest.password())
         );
         
-        return jwtService.generateToken(loginRequest.email());
+        return jwtService.generateTokenUsingEmail(loginRequest.email());
     }
 
 //----------------------------------------------------------------------------------------------------------------------
