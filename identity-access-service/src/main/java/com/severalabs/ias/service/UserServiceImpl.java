@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
+//----------------------------------------------------------------------------------------------------------------------
     @Override
     public User createUser(SignUpRequest signUpRequest) {
 
@@ -37,9 +38,12 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException("User Already Exists!");
 
         User newUser = new User();
+
         Set<Role> userRoles = newUser.getRoles();
+
         userRoles.add(roleRepository.findByName("USER").orElseThrow(()
                 -> new RoleNotCreatedException("Role Not Created")));
+
         String encodedPassword = encoder.encode(signUpRequest.password());
 
         newUser.setEmail(signUpRequest.email());
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(newUser);
     }
 
+//----------------------------------------------------------------------------------------------------------------------
     @Override
     public String loginUser(LoginRequest loginRequest) {
 
@@ -56,6 +61,10 @@ public class UserServiceImpl implements UserService {
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.email(), loginRequest.password())
         );
-        return jwtService.generateToken(authObject.getPrincipal().toString());
+        
+        return jwtService.generateToken(loginRequest.email());
     }
+
+//----------------------------------------------------------------------------------------------------------------------
+
 }
