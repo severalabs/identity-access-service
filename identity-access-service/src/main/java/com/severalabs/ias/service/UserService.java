@@ -1,14 +1,13 @@
 package com.severalabs.ias.service;
 
 import com.severalabs.ias.domain.User;
-import com.severalabs.ias.dto.LoginRequest;
-import com.severalabs.ias.dto.SignUpRequest;
+import com.severalabs.ias.dto.UserRequest;
 
 
 public interface UserService {
 
-    User createUser(SignUpRequest signUpRequest);
+    User createUser(UserRequest userRequest);
 
-    String loginUser (LoginRequest loginRequest);
+    String loginUser (UserRequest userRequest);
 
 }

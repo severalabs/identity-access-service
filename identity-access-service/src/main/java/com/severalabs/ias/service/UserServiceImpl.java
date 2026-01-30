@@ -2,8 +2,7 @@ package com.severalabs.ias.service;
 
 import com.severalabs.ias.domain.Role;
 import com.severalabs.ias.domain.User;
-import com.severalabs.ias.dto.LoginRequest;
-import com.severalabs.ias.dto.SignUpRequest;
+import com.severalabs.ias.dto.UserRequest;
 import com.severalabs.ias.exception.RoleNotCreatedException;
 import com.severalabs.ias.exception.UserAlreadyExistsException;
 import com.severalabs.ias.repository.RoleRepository;
@@ -32,37 +31,29 @@ public class UserServiceImpl implements UserService {
 
 //----------------------------------------------------------------------------------------------------------------------
     @Override
-    public User createUser(SignUpRequest signUpRequest) {
+    public User createUser(UserRequest signUpRequest) {
 
         if (userRepository.existsByEmail(signUpRequest.email()))
             throw new UserAlreadyExistsException("User Already Exists!");
-
         User newUser = new User();
-
         Set<Role> userRoles = newUser.getRoles();
-
         userRoles.add(roleRepository.findByName("USER").orElseThrow(()
                 -> new RoleNotCreatedException("Role Not Created")));
-
         String encodedPassword = encoder.encode(signUpRequest.password());
-
         newUser.setEmail(signUpRequest.email());
         newUser.setPassword(encodedPassword);
         newUser.setRoles(userRoles);
-
         return userRepository.save(newUser);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
     @Override
-    public String loginUser(LoginRequest loginRequest) {
-
+    public String loginUser(UserRequest userRequest) {
         Authentication authObject = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.email(), loginRequest.password())
+                        userRequest.email(), userRequest.password())
         );
-        
-        return jwtService.generateTokenUsingEmail(loginRequest.email());
+        return jwtService.generateTokenUsingEmail(userRequest.email());
     }
 
 //----------------------------------------------------------------------------------------------------------------------

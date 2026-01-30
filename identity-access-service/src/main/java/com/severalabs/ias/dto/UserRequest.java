@@ -1,6 +1,6 @@
 package com.severalabs.ias.dto;
 
-public record LoginRequest(
+public record UserRequest(
         String email,
         String password
 ) {

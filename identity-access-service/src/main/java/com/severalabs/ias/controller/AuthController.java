@@ -1,9 +1,8 @@
 package com.severalabs.ias.controller;
 
 import com.severalabs.ias.domain.User;
-import com.severalabs.ias.dto.LoginRequest;
-import com.severalabs.ias.dto.SignUpRequest;
-import com.severalabs.ias.service.UserServiceImpl;
+import com.severalabs.ias.dto.UserRequest;
+import com.severalabs.ias.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<User> createUser (@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<User> createUser (@RequestBody UserRequest userRequest) {
         return new ResponseEntity<>(
-                userService.createUser(signUpRequest), HttpStatusCode.valueOf(200));
+                userService.createUser(userRequest), HttpStatusCode.valueOf(200));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> userLogin (@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<String> userLogin (@RequestBody UserRequest userRequest){
         return new ResponseEntity<>(
-                userService.loginUser(loginRequest), HttpStatusCode.valueOf(200));
+                userService.loginUser(userRequest), HttpStatusCode.valueOf(200));
     }
 }

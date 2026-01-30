@@ -28,7 +28,7 @@ public class JwtService {
             String token = request.getHeader("Authorization");
             if (token != null && token.startsWith("Bearer "))
                 return token.substring(7);
-            throw new IllegalArgumentException("User not Recognised");
+            return null;
     }
 
 //----------------------------------------------------------------------------------------------------------------------

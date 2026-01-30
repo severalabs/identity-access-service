@@ -17,6 +17,9 @@
       <assistant-state connection-id="virtual-postgres-connection" default-profile-name="" selected-profile-name="" selected-model-name="" assistant-type="GENERIC" selected-action="SHOW_SQL" availability="UNAVAILABLE" acknowledgement="NONE">
         <messages />
       </assistant-state>
+      <assistant-state connection-id="dc7db4ea-a213-4a89-9102-141883b80c9a" default-profile-name="" selected-profile-name="" selected-model-name="" assistant-type="GENERIC" selected-action="SHOW_SQL" availability="UNAVAILABLE" acknowledgement="NONE">
+        <messages />
+      </assistant-state>
     </assistants>
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -51,6 +54,7 @@
     <mapping file-url="file://$PROJECT_DIR$/identity-access-service/src/main/resources/db/migration/V2__create_role_table.sql" connection-id="09ba597d-9952-44f2-89fc-82deb64f8f3f" session-id="MAIN" current-schema="postgres" />
     <mapping file-url="file://$PROJECT_DIR$/identity-access-service/src/main/resources/db/migration/V3__create_user_role_join_table.sql" connection-id="09ba597d-9952-44f2-89fc-82deb64f8f3f" session-id="MAIN" current-schema="ias_dev" />
     <mapping file-url="file://$PROJECT_DIR$/identity-access-service/src/main/resources/db/migration/V4__insert_default_roles.sql" connection-id="09ba597d-9952-44f2-89fc-82deb64f8f3f" session-id="MAIN" current-schema="postgres" />
+    <mapping file-url="file://$PROJECT_DIR$/identity-access-service/src/main/resources/db/migration/V5__add_enabled_to_user.sql" connection-id="09ba597d-9952-44f2-89fc-82deb64f8f3f" session-id="MAIN" current-schema="" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
@@ -171,7 +175,7 @@
           <description value="" />
           <database-type value="POSTGRES" />
           <config-type value="BASIC" />
-          <database-version value="9999.0" />
+          <database-version value="18.0" />
           <driver-source value="BUNDLED" />
           <driver-library value="" />
           <driver value="" />
@@ -186,7 +190,7 @@
           <token-type value="" />
           <token-config-file value="" />
           <token-profile value="" />
-          <session-user value="" />
+          <session-user value="postgres" />
         </database>
         <properties>
           <auto-commit value="false" />
