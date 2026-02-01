@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role extends BaseAuditEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +20,5 @@ public class Role {
 
     @Column(name = "role_name")
     private String name;
+
 }
