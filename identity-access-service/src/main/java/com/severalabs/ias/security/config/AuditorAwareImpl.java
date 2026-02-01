@@ -1,0 +1,24 @@
+package com.severalabs.ias.security.config;
+
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Optional;
+
+public class AuditorAwareImpl implements AuditorAware<String> {
+
+    @Override
+    @NonNull
+    public Optional<String> getCurrentAuditor() {
+
+        Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
+
+        if (currentUser == null || !currentUser.isAuthenticated()
+                || !(currentUser instanceof AnonymousAuthenticationToken) )
+            return Optional.of("SYSTEM");
+        return Optional.of(currentUser.getName());
+    }
+}
