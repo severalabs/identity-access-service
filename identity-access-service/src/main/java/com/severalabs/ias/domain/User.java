@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,10 +39,9 @@ public class User extends BaseAuditEntity{
     @Column(nullable = false)
     private boolean enabled = true;
 
+    @Column(nullable = false)
+    private int failedLoginAttempts = 0;
 
-    //    @CreationTimestamp
-//    private LocalDateTime createdAt;
-//
-//    @UpdateTimestamp
-//    private LocalDateTime updatedAt;
+    @Column
+    private Instant lockDuration;
 }
