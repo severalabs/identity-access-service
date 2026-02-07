@@ -34,5 +34,5 @@ public abstract class BaseAuditEntity {
     private String createdBy;
 
     @LastModifiedBy
-    private Instant updatedBy;
+    private String updatedBy;
 }

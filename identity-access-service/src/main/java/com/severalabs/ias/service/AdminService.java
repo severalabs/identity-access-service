@@ -11,6 +11,7 @@ public interface AdminService {
     void assignRole(Long userId, String role_name);
     void removeRole(Long userId, String role_name);
     void disableUser(Long userId);
+    void unlockUser(Long userId);
     List<UserResponse> listAllUsers();
 
 }

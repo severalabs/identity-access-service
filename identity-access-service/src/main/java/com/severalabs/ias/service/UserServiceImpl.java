@@ -3,20 +3,27 @@ package com.severalabs.ias.service;
 import com.severalabs.ias.domain.Role;
 import com.severalabs.ias.domain.User;
 import com.severalabs.ias.dto.UserRequest;
+import com.severalabs.ias.dto.UserResponse;
 import com.severalabs.ias.exception.RoleNotCreatedException;
 import com.severalabs.ias.exception.UserAlreadyExistsException;
+import com.severalabs.ias.exception.UserNotFoundException;
 import com.severalabs.ias.repository.RoleRepository;
 import com.severalabs.ias.repository.UserRepository;
 import com.severalabs.ias.security.jwt.JwtService;
+import com.severalabs.ias.security.services.LoginAttemptService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.AccountLockedException;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
 //----------------------------------------------------------------------------------------------------------------------
     @Override
-    public User createUser(UserRequest signUpRequest) {
+    public UserResponse createUser(UserRequest signUpRequest) {
 
         if (userRepository.existsByEmail(signUpRequest.email()))
             throw new UserAlreadyExistsException("User Already Exists!");
@@ -43,17 +50,43 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(signUpRequest.email());
         newUser.setPassword(encodedPassword);
         newUser.setRoles(userRoles);
-        return userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
+        Set<String> newRoles = savedUser.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toCollection(HashSet::new));
+        return new UserResponse(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                newRoles,
+                savedUser.isEnabled());
     }
 
 //----------------------------------------------------------------------------------------------------------------------
     @Override
     public String loginUser(UserRequest userRequest) {
-        Authentication authObject = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        userRequest.email(), userRequest.password())
-        );
-        return jwtService.generateTokenUsingEmail(userRequest.email());
+
+        if (!userRepository.existsByEmail(userRequest.email()))
+            throw new RuntimeException("Wrong username");
+
+        User user = userRepository.findByEmail(userRequest.email())
+                .orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
+        if (LoginAttemptService.isUserLocked(user))
+            throw new RuntimeException("Account locked until " + user.getLockDuration());
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            userRequest.email(), userRequest.password()));
+        } catch(BadCredentialsException e) {
+            User updatedUserFailed = LoginAttemptService.loginFailed(user);
+            User failedUser = userRepository.save(updatedUserFailed);
+            return e.getMessage() + " " + failedUser.getFailedLoginAttempts();
+        }
+        User updatedUserPassed = LoginAttemptService.loginPassed(user);
+        User loggedInUser = userRepository.save(updatedUserPassed);
+
+        return jwtService.generateTokenUsingEmail(loggedInUser.getEmail());
     }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -44,4 +44,10 @@ public class User extends BaseAuditEntity{
 
     @Column
     private Instant lockDuration;
+
+    @Column
+    private String passwordResetTokenHashed;
+
+    @Column
+    private Instant passwordResetTokenValidityDuration;
 }

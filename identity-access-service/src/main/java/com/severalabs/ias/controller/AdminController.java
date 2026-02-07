@@ -5,13 +5,14 @@ import com.severalabs.ias.dto.UserRequest;
 import com.severalabs.ias.dto.UserResponse;
 import com.severalabs.ias.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
+@RequestMapping("/api/admin/users")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
@@ -46,4 +47,8 @@ public class AdminController {
         return ResponseEntity.ok(adminService.listAllUsers());
     }
 
+    @PatchMapping("/{id}/unlock")
+    public void unlockUser (@PathVariable Long id) {
+        adminService.unlockUser(id);
+    }
 }

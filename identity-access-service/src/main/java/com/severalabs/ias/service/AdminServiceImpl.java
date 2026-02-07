@@ -4,6 +4,7 @@ import com.severalabs.ias.domain.Role;
 import com.severalabs.ias.domain.User;
 import com.severalabs.ias.dto.UserRequest;
 import com.severalabs.ias.dto.UserResponse;
+import com.severalabs.ias.exception.UserNotFoundException;
 import com.severalabs.ias.repository.RoleRepository;
 import com.severalabs.ias.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -17,8 +18,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class AdminServiceImpl implements AdminService{
 
     private final PasswordEncoder encoder;
@@ -65,8 +66,18 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public void disableUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException("User not found"));
         user.setEnabled(false);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unlockUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException("User not found"));
+        user.setFailedLoginAttempts(0);
+        user.setLockDuration(null);
         userRepository.save(user);
     }
 

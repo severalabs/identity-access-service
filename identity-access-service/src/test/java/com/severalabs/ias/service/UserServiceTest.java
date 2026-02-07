@@ -1,43 +1,48 @@
 package com.severalabs.ias.service;
 
-import com.severalabs.ias.domain.User;
+import com.severalabs.ias.dto.UserRequest;
+import com.severalabs.ias.dto.UserResponse;
 import com.severalabs.ias.exception.UserAlreadyExistsException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestConstructor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@RequiredArgsConstructor
+//Tell spring to takeover from junit5 and inject all dependencies
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@AutoConfigureTestDatabase(replace =
+        AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class UserServiceTest {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Test
     void createUser_whenEmailIsUnique_shouldCreateUser() {
 
-        SignUpRequest dto = new SignUpRequest("owen.chosen@gmail.com", "M@kinj@1994");
-        User savedUser = userService.createUser(dto);
-
-        assertNotNull(savedUser.getId());
-        assertEquals("owen.chosen@gmail.com", savedUser.getEmail());
-        assertNotEquals(dto.password(), savedUser.getPassword());
-
+        UserRequest dto = new UserRequest("test@gmail.com", "test@2025");
+        UserResponse savedUser = userService.createUser(dto);
+        assertNotNull(savedUser.id());
+        assertEquals("test@gmail.com", savedUser.email());
+        assertTrue(savedUser.enabled());
     }
 
     @Test
     void createUser_whenEmailAlreadyExists_shouldThrowException() {
 
-        SignUpRequest dto = new SignUpRequest("owen.chosen@gmail.com", "M@kinj@1994");
-        userService.createUser(dto);
-
+        UserRequest dto = new UserRequest("test@gmail.com", "test@2025");
+        UserResponse newUser = userService.createUser(dto);
         assertThrows(UserAlreadyExistsException.class,
                 () -> userService.createUser(dto));
 
     }
+
 }
