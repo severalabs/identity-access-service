@@ -1,7 +1,6 @@
-package com.severalabs.ias.security.services;
+package com.severalabs.ias.service;
 
 import com.severalabs.ias.domain.User;
-import com.severalabs.ias.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,17 +10,19 @@ import java.time.Instant;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class LoginAttemptService {
+public class LoginAttemptServiceImpl implements LoginAttemptService{
 
     private static final int MAX_FAILED_ATTEMPTS = 5;
     private static final Duration LOCK_DURATION = Duration.ofMinutes(10);
 
-    public static Boolean isUserLocked(User user) {
+    @Override
+    public Boolean isUserLocked(User user) {
         return user.getLockDuration() != null
                 && user.getLockDuration().isAfter(Instant.now());
     }
 
-    public static User loginFailed(User user) {
+    @Override
+    public User loginFailed(User user) {
         int trials = user.getFailedLoginAttempts();
         if ( trials >= MAX_FAILED_ATTEMPTS ) {
             user.setFailedLoginAttempts(0);
@@ -31,7 +32,8 @@ public class LoginAttemptService {
         return user;
     }
 
-    public static User loginPassed(User user) {
+    @Override
+    public User loginPassed(User user) {
         user.setFailedLoginAttempts(0);
         user.setLockDuration(null);
         return user;

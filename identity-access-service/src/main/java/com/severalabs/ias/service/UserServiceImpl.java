@@ -10,17 +10,14 @@ import com.severalabs.ias.exception.UserNotFoundException;
 import com.severalabs.ias.repository.RoleRepository;
 import com.severalabs.ias.repository.UserRepository;
 import com.severalabs.ias.security.jwt.JwtService;
-import com.severalabs.ias.security.services.LoginAttemptService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.login.AccountLockedException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final LoginAttemptService loginAttemptService;
 
 //----------------------------------------------------------------------------------------------------------------------
     @Override
@@ -71,7 +69,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(userRequest.email())
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
 
-        if (LoginAttemptService.isUserLocked(user))
+        if (loginAttemptService.isUserLocked(user))
             throw new RuntimeException("Account locked until " + user.getLockDuration());
 
         try {
@@ -79,11 +77,11 @@ public class UserServiceImpl implements UserService {
                     new UsernamePasswordAuthenticationToken(
                             userRequest.email(), userRequest.password()));
         } catch(BadCredentialsException e) {
-            User updatedUserFailed = LoginAttemptService.loginFailed(user);
+            User updatedUserFailed = loginAttemptService.loginFailed(user);
             User failedUser = userRepository.save(updatedUserFailed);
             return e.getMessage() + " " + failedUser.getFailedLoginAttempts();
         }
-        User updatedUserPassed = LoginAttemptService.loginPassed(user);
+        User updatedUserPassed = loginAttemptService.loginPassed(user);
         User loggedInUser = userRepository.save(updatedUserPassed);
 
         return jwtService.generateTokenUsingEmail(loggedInUser.getEmail());
